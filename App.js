@@ -60,10 +60,26 @@ function AppContent() {
         const registered = await AsyncStorage.getItem('hasRegistered');
         const savedTheme = await AsyncStorage.getItem('appTheme');
 
-        if (loggedIn === 'true') dispatch(login());
-        if (admin === 'true') dispatch(setAdmin(true));
-        if (registered === 'true') dispatch(setRegistered(true));
-        if (savedTheme) dispatch(setTheme(JSON.parse(savedTheme)));
+        if (loggedIn === 'true') {
+          dispatch(login());
+
+          if (admin === 'true') {
+            dispatch(setAdmin(true));
+          } else {
+            dispatch(setAdmin(false)); 
+          }
+        } else {
+         
+          dispatch(setAdmin(false));
+        }
+
+        if (registered === 'true') {
+          dispatch(setRegistered(true));
+        }
+
+        if (savedTheme) {
+          dispatch(setTheme(JSON.parse(savedTheme)));
+        }
       } catch (err) {
         console.log('Initialization error:', err);
 
@@ -105,18 +121,15 @@ function AppContent() {
     >
       <NavigationContainer theme={theme === 'light' ? DefaultTheme : DarkTheme}>
         {isLoggedIn ? (
-          isAdmin ? (
-            <AdminNavigator />
-          ) : (
-            <AppNavigator />
-          )
+          isAdmin ? <AdminNavigator /> : <AppNavigator />
         ) : (
-          <AppNavigator />
+          <AppNavigator /> 
         )}
       </NavigationContainer>
     </ThemeContext.Provider>
   );
 }
+
 
 export default function App() {
   return (

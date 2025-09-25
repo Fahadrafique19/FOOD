@@ -28,7 +28,7 @@ export default function AppNavigator() {
       <Stack.Screen name="TrackingScreen" component={TrackingScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
-      {/* <Stack.Screen name="Register" component={RegisterScreen} /> */}
+      
     </Stack.Navigator>
   );
 }

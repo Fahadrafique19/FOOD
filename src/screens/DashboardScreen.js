@@ -4,14 +4,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ThemeContext } from '../../App';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/slices/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DashboardScreen = ({ navigation }) => {
   const { theme, toggleTheme, colors } = useContext(ThemeContext);
   const dispatch = useDispatch();
   const isAdmin = useSelector(state => state.auth.isAdmin);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+  
     dispatch(logout());
+
+    
+    await AsyncStorage.multiSet([
+      ['isLoggedIn', 'false'],
+      ['isAdmin', 'false'],
+    ]);
+
+  
   };
 
   return (
