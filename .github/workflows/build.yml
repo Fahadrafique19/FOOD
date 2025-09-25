@@ -3,7 +3,7 @@ name: Build Signed APK
 on:
   push:
     branches:
-      - main   # apni branch ka naam
+      - main   # jis branch pe push karoge, build chalega
 
 jobs:
   build:
@@ -20,7 +20,15 @@ jobs:
           java-version: "17"
 
       - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/my-release-key.keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/my-release-key.keystore
+
+      - name: Set up signing env
+        run: |
+          echo "MYAPP_UPLOAD_STORE_FILE=my-release-key.keystore" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Install Dependencies
         run: npm install
@@ -32,7 +40,7 @@ jobs:
         run: |
           cd android
           ./gradlew clean
-          ./gradlew assembleRelease -Pandroid.injected.signing.store.file=my-release-key.keystore -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+          ./gradlew assembleRelease
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
